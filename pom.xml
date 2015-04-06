@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.nodescription.textnow</groupId>
-  <artifactId>textnow-java-sdk</artifactId>
+  <artifactId>textnow-java-api</artifactId>
   <packaging>jar</packaging>
-  <name>textnow-java-sdk</name>
+  <name>textnow-java-api</name>
   <version>0.0.0-SNAPSHOT</version>
-  <description>Java helper library for Twilio services</description>
-  <url>http://www.twilio.com</url>
+  <description>Unofficial Java helper library for TextNow services</description>
+  <url>http://www.textnow.com</url>
   <licenses>
     <license>
       <name>MIT License</name>
@@ -15,18 +15,18 @@
     </license>
   </licenses>
   <scm>
-    <url>git@github.com:twilio/twilio-java.git</url>
-    <connection>scm:git:git@github.com:twilio/twilio-java.git</connection>
-    <developerConnection>scm:git:git@github.com:twilio/twilio-java.git</developerConnection>
+    <url>git@github.com:patcon/textnow-java-api.git</url>
+    <connection>scm:git:git@github.com:patcon/textnow-java-api.git</connection>
+    <developerConnection>scm:git:git@github.com:patcon/textnow-java-api.git</developerConnection>
   </scm>
   <developers>
     <developer>
-      <id>support</id>
-      <name>Twilio Support</name>
-      <email>help@twilio.com</email>
-      <organization>Twilio, Inc.</organization>
-      <organizationUrl>https://www.twilio.com</organizationUrl>
-      <timezone>-7</timezone>
+      <id>patcon</id>
+      <name>Patrick Connolly</name>
+      <email>patrick.c.connolly@gmail.com</email>
+      <organization>nodescription</organization>
+      <organizationUrl>http://www.nodescription.net</organizationUrl>
+      <timezone>-5</timezone>
     </developer>
   </developers>
 
