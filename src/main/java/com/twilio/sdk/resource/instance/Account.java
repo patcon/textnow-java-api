@@ -66,6 +66,12 @@ public class Account extends InstanceResource<TwilioRestClient> {
 	/** The Constant FRIENDLY_NAME_PROPERTY. */
 	private static final String FRIENDLY_NAME_PROPERTY = "friendly_name";
 
+	private static final String PHONE_NUMBER_PROPERTY = "phone_number";
+	private static final String CREDITS_PROPERTY = "credits";
+	private static final String SIP_HOST_PROPERTY = "sip_IP";
+	private static final String SIP_USERNAME_PROPERTY = "sip_username";
+	private static final String SIP_PASSWORD_PROPERTY = "sip_password";
+
 	/** The Constant AUTH_TOKEN_PROPERTY. */
 	private static final String AUTH_TOKEN_PROPERTY = "auth_token";
 
@@ -145,6 +151,26 @@ public class Account extends InstanceResource<TwilioRestClient> {
 		return this.getProperty(FRIENDLY_NAME_PROPERTY);
 	}
 
+	public String getPhoneNumber() {
+		return this.getProperty(PHONE_NUMBER_PROPERTY);
+	}
+
+	public int getCredits() {
+		return (Integer) this.getObject(CREDITS_PROPERTY);
+	}
+
+	public String getSipHost() {
+		return this.getProperty(SIP_HOST_PROPERTY);
+	}
+
+	public String getSipUsername() {
+		return this.getProperty(SIP_USERNAME_PROPERTY);
+	}
+
+	public String getSipPassword() {
+		return this.getProperty(SIP_PASSWORD_PROPERTY);
+	}
+
 	/**
 	 * Gets the status.
 	 *
@@ -192,7 +218,7 @@ public class Account extends InstanceResource<TwilioRestClient> {
 	}
 
 	private String getResourceLocation(String extension) {
-		return "/" + TwilioRestClient.DEFAULT_VERSION + "/Accounts/" + this.getRequestAccountSid() + extension;
+		return "/" + TwilioRestClient.DEFAULT_VERSION + "/users/" + this.getRequestAccountSid();
 	}
 
 	/*

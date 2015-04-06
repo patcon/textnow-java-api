@@ -26,12 +26,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 */
 
-import org.apache.commons.codec.binary.Base64;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,62 +35,49 @@ import java.util.Map;
 
 public class TwilioUtils {
 
-    protected String authToken;
+    protected String hardcodedKey = "f8ab2ceca9163724b6d126aea9620339";
     
-    public TwilioUtils(String authToken){
-        this.authToken = authToken;
-    }
-    
-    @Deprecated
-    public TwilioUtils(String authToken, String accountSid){
-    	this.authToken = authToken;
+    public TwilioUtils(){
+        this.hardcodedKey = hardcodedKey;
     }
 
-    public boolean validateRequest(String expectedSignature, String url, Map<String,String> params) {
+    public boolean validateRequest(String expectedSignature, String method, String url, Map<String,String> params) {
         String signature = null;
 
-        signature = getValidationSignature(url, params);
+        signature = getValidationSignature(method, url, params);
         return secureCompare(signature, expectedSignature);
     }
     
-    public String getValidationSignature(String url, Map<String,String> params) {
-    	SecretKeySpec signingKey = new SecretKeySpec(this.authToken.getBytes(), "HmacSHA1");
-   	
-    	try {
-	    	//initialize the hash algortihm
-	        Mac mac = Mac.getInstance("HmacSHA1");
-	        mac.init(signingKey);
-	
-	        //sort the params alphabetically, and append the key and value of each to the url
-	        StringBuffer data = new StringBuffer(url);
-	        if (params != null) {
-	            List<String> sortedKeys = new ArrayList<String>( params.keySet());
-	            Collections.sort(sortedKeys);
-	
-	            for (String s: sortedKeys) {
-	                data.append(s);
-	                String v = "";
-	                if (params.get(s) != null) {
-	                    v = params.get(s);
-	                }
-	                data.append(v);
-	            }
-	        }
-	
-	        //compute the hmac on input data bytes
-	        byte[] rawHmac = mac.doFinal(data.toString().getBytes("UTF-8"));
-	
-	        //base64-encode the hmac
-	        String signature = new String(Base64.encodeBase64(rawHmac));
-	
-	        return signature; 
-        } catch (NoSuchAlgorithmException e) {
-            return null;
-        } catch (InvalidKeyException e) {
-            return null;
-        } catch (UnsupportedEncodingException e) {
-            return null;
-        }
+    public String getValidationSignature(String method, String url, Map<String,String> params) {
+        String catString = this.hardcodedKey + method + url;
+        System.out.println(catString);
+        String signature = md5(catString);
+
+        return signature;
+    }
+
+    public String md5(String string) {
+      try {
+          // Create MD5 Hash
+          MessageDigest digest = java.security.MessageDigest
+                  .getInstance("MD5");
+          digest.update(string.getBytes());
+          byte messageDigest[] = digest.digest();
+
+          // Create Hex String
+          StringBuffer hexString = new StringBuffer();
+          for (int i = 0; i < messageDigest.length; i++) {
+              String h = Integer.toHexString(0xFF & messageDigest[i]);
+              while (h.length() < 2)
+                  h = "0" + h;
+              hexString.append(h);
+          }
+          return hexString.toString();
+
+      } catch (NoSuchAlgorithmException e) {
+          e.printStackTrace();
+      }
+      return "";
     }
 
     /**

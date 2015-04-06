@@ -1,5 +1,7 @@
 package com.twilio.sdk;
 
+import org.apache.commons.lang3.StringUtils;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -24,6 +26,8 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
+import com.twilio.sdk.TwilioUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -38,18 +42,18 @@ import java.util.Map;
  */
 public abstract class TwilioClient {
 
-	private static final int ACCOUNT_SID_LENGTH = 34;
+	private static final int ACCOUNT_SID_MIN_LENGTH = 1;
 
-	private static final int AUTH_TOKEN_LENGTH = 32;
+	private static final int AUTH_TOKEN_LENGTH = 64;
 
 	/** The Constant VERSION. */
-	private static final String VERSION = "3.7.1";
+	private static final String VERSION = "0.0.0";
 
 	/** The endpoint. */
-	private String endpoint = "https://api.twilio.com";
+	private String endpoint = "https://api.textnow.me";
 
 	/** The Constant DEFAULT_VERSION. */
-	public static final String DEFAULT_VERSION = "2010-04-01";
+	public static final String DEFAULT_VERSION = "api2.0";
 
 	/** The account sid. */
 	private final String accountSid;
@@ -167,9 +171,9 @@ public abstract class TwilioClient {
 	 * @param accountSid the account sid
 	 */
 	private void validateAccountSid(final String accountSid) {
-		if (accountSid == null || !accountSid.startsWith("AC") || accountSid.length() != ACCOUNT_SID_LENGTH) {
+		if (accountSid == null || accountSid.length() < ACCOUNT_SID_MIN_LENGTH) {
 			throw new IllegalArgumentException(
-					"AccountSid '" + accountSid + "' is not valid.  It should be the 34 character unique identifier starting with 'AC'");
+					"AccountSid '" + accountSid + "' is not valid.");
 		}
 	}
 
@@ -179,8 +183,10 @@ public abstract class TwilioClient {
 	 * @param vars the vars
 	 * @return the list
 	 */
-	private static List<NameValuePair> generateParameters(final Map<String, String> vars) {
+	private List<NameValuePair> generateParameters(final Map<String, String> vars) {
 		List<NameValuePair> qparams = new ArrayList<NameValuePair>();
+		qparams.add(new BasicNameValuePair("client_type", "TN_ANDROID"));
+		qparams.add(new BasicNameValuePair("client_id", authToken));
 
 		if (vars != null) {
 			for (final String var : vars.keySet()) {
@@ -226,8 +232,15 @@ public abstract class TwilioClient {
 	 * @return the http get
 	 */
 	private HttpGet generateGetRequest(final String path, final List<NameValuePair> params) {
-
 		URI uri = buildUri(path, params);
+
+		TwilioUtils validator = new TwilioUtils();
+		String fullPath = uri.getPath() + "?" + uri.getQuery();
+		String trimmedPath =  StringUtils.removeStart(fullPath, "/" + DEFAULT_VERSION + "/");
+		String signature = validator.getValidationSignature("GET", trimmedPath, null);
+
+		uri = buildUri(path, params, signature);
+
 		return new HttpGet(uri);
 	}
 
@@ -311,6 +324,10 @@ public abstract class TwilioClient {
 		return buildUri(path, null);
 	}
 
+	private URI buildUri(final String path, final List<NameValuePair> queryStringParams) {
+		return buildUri(path, queryStringParams, null);
+	}
+
 	/**
 	 * Builds the uri.
 	 *
@@ -318,13 +335,18 @@ public abstract class TwilioClient {
 	 * @param queryStringParams the query string params
 	 * @return the uRI
 	 */
-	private URI buildUri(final String path, final List<NameValuePair> queryStringParams) {
+	private URI buildUri(final String path, final List<NameValuePair> queryStringParams, String signature) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(path);
 
 		if (queryStringParams != null && queryStringParams.size() > 0) {
 			sb.append("?");
 			sb.append(URLEncodedUtils.format(queryStringParams, "UTF-8"));
+		}
+
+		if (signature != null && signature.length() > 0) {
+			sb.append("&");
+			sb.append("signature=" +  signature);
 		}
 
 		URI uri;
@@ -462,8 +484,8 @@ public abstract class TwilioClient {
 
 		HttpUriRequest request = buildMethod(method, path, params);
 
-		request.addHeader(new BasicHeader("X-Twilio-Client", "java-" + VERSION));
-		request.addHeader(new BasicHeader("User-Agent", "twilio-java/" + VERSION));
+		request.addHeader(new BasicHeader("X-TextNow-Client", "java-" + VERSION));
+		request.addHeader(new BasicHeader("User-Agent", "textnow-java/" + VERSION));
 		request.addHeader(new BasicHeader("Accept", "application/json"));
 		request.addHeader(new BasicHeader("Accept-Charset", "utf-8"));
 

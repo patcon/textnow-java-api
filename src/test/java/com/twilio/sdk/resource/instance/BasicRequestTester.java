@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 
 public class BasicRequestTester {
 	final String accountSid = "AC0123456789abcdef0123456789abcdef";
-	final String authtoken = "0123456789abcdef0123456789abcdef";
+	final String authtoken = "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
 
 	@Mock
 	HttpClient httpClient;

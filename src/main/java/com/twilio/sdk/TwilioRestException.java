@@ -60,7 +60,7 @@ public class TwilioRestException extends Exception {
 		String moreInfo = "";
 		int errorCode = 0;
 		if (response.isJson()) {
-			message = (String) data.get("message");
+			message = (String) data.get("error_code");
 			
 			if (data.get("code") != null) {
 				errorCode = (Integer) data.get("code");

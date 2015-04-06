@@ -43,8 +43,8 @@ public class SmsList extends ListResource<Sms, TwilioRestClient> implements SmsF
 	 */
 	@Override
 	protected String getResourceLocation() {
-		return "/" + TwilioRestClient.DEFAULT_VERSION + "/Accounts/"
-				+ this.getRequestAccountSid() + "/SMS/Messages.json";
+		return "/" + TwilioRestClient.DEFAULT_VERSION + "/users/"
+				+ this.getRequestAccountSid() + "/messages";
 	}
 
 	/* (non-Javadoc)
@@ -60,7 +60,7 @@ public class SmsList extends ListResource<Sms, TwilioRestClient> implements SmsF
 	 */
 	@Override
 	protected String getListKey() {
-		return "sms_messages";
+		return "messages";
 	}
 
 	/* (non-Javadoc)

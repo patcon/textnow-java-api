@@ -31,7 +31,7 @@ public class TwilioClientTest {
 		// Should construct with valid looking account sid and auth token
 		TwilioClient client = new TwilioRestClient(
 				"ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-				"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+				"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef");
 	}
 
 	/**
@@ -43,18 +43,21 @@ public class TwilioClientTest {
 	public void testRequest() throws TwilioRestException {
 		TwilioClient client = new TwilioRestClient(
 				"ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-				"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+				"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef");
 
 		// Auth required
-		TwilioRestResponse response = client.request("/2010-04-01/Accounts.json", "GET", (Map) null);
-		assertEquals(401, response.getHttpStatus());
+		TwilioRestResponse response = client.request("/api2.0/users", "GET", (Map) null);
+		assertEquals(404, response.getHttpStatus());
 
 		// Auth not required
-		response = client.request("/2010-04-01", "GET", (Map) null);
-		assertEquals(200, response.getHttpStatus());
+		response = client.request("/api2.0", "GET", (Map) null);
+		assertEquals(404, response.getHttpStatus());
 
 		// 404'd
 		response = client.request("/asfhrhewhwejrkasyrey", "GET", (Map) null);
+		assertEquals(404, response.getHttpStatus());
+
+		response = client.request("/", "GET", (Map) null);
 		assertEquals(404, response.getHttpStatus());
 	}
 
@@ -67,7 +70,7 @@ public class TwilioClientTest {
 	public void testGet() throws TwilioRestException {
 		TwilioClient client = new TwilioRestClient(
 				"ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-				"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+				"0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef");
 
 		// Auth required
 		TwilioRestResponse response = client.get("https://api.twilio.com");

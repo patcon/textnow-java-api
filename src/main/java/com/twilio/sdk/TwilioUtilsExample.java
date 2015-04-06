@@ -42,13 +42,15 @@ public class TwilioUtilsExample {
         //This is the url that twilio requested
         String url = "http://UUUUUUUUUUUUUUU";
 
+        String method = "GET";
+
         //These are the post params twilio sent in its request
         Map<String,String> params = new HashMap<String,String>();
 
         // Be sure to see the signing notes at twilio.com/docs/security
-        TwilioUtils util = new TwilioUtils(authToken, accountSid);
+        TwilioUtils util = new TwilioUtils();
 
-        boolean result = util.validateRequest(expected_sig, url, params);
+        boolean result = util.validateRequest(expected_sig, method, url, params);
 
         if (result) {
             System.out.print( "The signature is valid!\n" );
