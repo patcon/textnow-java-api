@@ -4,7 +4,7 @@
   <artifactId>textnow-java-api</artifactId>
   <packaging>jar</packaging>
   <name>textnow-java-api</name>
-  <version>0.0.0-SNAPSHOT</version>
+  <version>0.1.0</version>
   <description>Unofficial Java helper library for TextNow services</description>
   <url>http://www.textnow.com</url>
   <licenses>
